@@ -8,4 +8,4 @@ import shclassify
 def cli(count):
     """Echo a value `N` number of times"""
     for i in range(count):
-        click.echo(shclassify.has_legs)
+        click.echo(shclassify.has_legs())
