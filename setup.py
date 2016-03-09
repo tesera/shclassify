@@ -20,7 +20,8 @@ setup(name='shclassify',
       include_package_data=True,
       zip_safe=False,
       install_requires=[
-          'click'
+          'click',
+          'pandas==0.17.1',
       ],
       extras_require={
           'test': ['pytest'],
