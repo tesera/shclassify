@@ -18,6 +18,9 @@ setup(name='shclassify',
       license='',
       packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
       include_package_data=True,
+      package_data={
+          'shclassify': ['data/*'],
+      },
       zip_safe=False,
       install_requires=[
           'click',

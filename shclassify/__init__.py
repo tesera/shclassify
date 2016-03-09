@@ -1,6 +1,8 @@
 import logging
 import os
 
+from .core import load_input_data
+
 
 _BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 _LOG_FILENAME = __name__ + '.log'
@@ -17,6 +19,4 @@ logging.basicConfig(level=logging.DEBUG,
 log = logging.getLogger(__name__)
 
 
-def has_legs():
-    log.debug('in a function')
-    return False
+__all__ = [load_input_data]
