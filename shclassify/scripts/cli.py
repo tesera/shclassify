@@ -30,7 +30,7 @@ def create_output_path(ctx, param, value):
     return path
 
 @click.command('shclassify')
-@click.argument('path', type=click.Path(exists=True), is_eager=True)
+@click.argument('path', type=click.Path(exists=True))
 @click.option('--delim', '-d', default=',', type=click.Choice([',', r'\t', ';']),
               help='field delimeter')
 @click.option('--verbose', '-v', is_flag=True)
