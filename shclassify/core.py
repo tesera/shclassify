@@ -1,14 +1,27 @@
-import pandas as pd
+from .utils import calc_num_na, load_data
 
 
-def load_input_data(path, sep=',', **kwargs):
-    """Load input data for SLS HRIS LCC Prediction
+def load_model(path, sep=',', **kwargs):
+    """Load a model for SLS HRIS LCC Prediction
 
-    Keyword Arguments:
-    path     -- path to input data, string or URL (e.g. http, s3)
-    sep      -- input data field separator
-    **kwargs -- keyword arguments passed to `pandas.read_table`
+    :param path: path to input data, string or URL (e.g. http, s3)
+    :param sep: input data field separator
+    :param kwargs: keyword arguments passed to `utils.load_data`
     """
-    df = pd.read_table(path, sep=sep, **kwargs)
-    return df
+    model = load_data(path, sep=sep, **kwargs)
 
+    missing = calc_num_na(model)
+    if missing > 0:
+        raise ValueError(('Model has %s missing coefficients.' %missing))
+
+    return model
+
+
+def load_observations(path, sep=',', **kwargs):
+    """Load observations for SLS HRIS LCC Prediction
+
+    :param path: path to input data, string or URL (e.g. http, s3)
+    :param sep: input data field separator
+    :param kwargs: keyword arguments passed to `utils.load_data`
+    """
+    return load_data(path, sep=sep, **kwargs)

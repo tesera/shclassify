@@ -1,22 +1,22 @@
 import logging
 import os
 
-from .core import load_input_data
+from .core import load_observations, load_model
 
 
-_BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-_LOG_FILENAME = __name__ + '.log'
-_LOG_PATH = os.path.join(_BASE_DIR, _LOG_FILENAME)
-_LOG_FORMAT = '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
-
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+LOG_FILENAME = __name__ + '.log'
+LOG_PATH = os.path.join(BASE_DIR, LOG_FILENAME)
+LOG_FORMAT = '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
+DATA_DIR = os.path.join(BASE_DIR, 'data')
 
 logging.basicConfig(level=logging.DEBUG,
-                    format=_LOG_FORMAT,
+                    format=LOG_FORMAT,
                     datefmt='%y-%m-%d %H:%M:%S',
-                    filename=_LOG_PATH,
+                    filename=LOG_PATH,
                     filemode='w')
 
 log = logging.getLogger(__name__)
 
 
-__all__ = [load_input_data]
+__all__ = [DATA_DIR, load_observations, load_model]
