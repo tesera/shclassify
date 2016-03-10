@@ -29,19 +29,24 @@ def create_output_path(ctx, param, value):
         path += '.out'
     return path
 
-@click.command('shclassify')
-@click.argument('path', type=click.Path(exists=True))
-@click.option('--delim', '-d', default=',', type=click.Choice([',', r'\t', ';']),
+@click.command('shclassify',
+               help=('Predict landcover class for \'OBSERVATIONS_FILE\''
+                     ' using SLS HRIS model'))
+@click.argument('observations-file', type=click.Path(exists=True))
+@click.option('--delim', '-d', default=',',
+              type=click.Choice([',', r'\t', ';']),
               help='field delimeter')
 @click.option('--verbose', '-v', is_flag=True)
 @click.option('--intermediate-preds', '-i', is_flag=True,
               help='save intermediate class predictions')
-@click.option('--outfile', '-o', callback=create_output_path, type=click.Path())
-def cli(path, delim, intermediate_preds, verbose, outfile):
+@click.option('--outfile', '-o', callback=create_output_path,
+              type=click.Path(),
+              help='path to use for output (prediction) data')
+def cli(observations_file, delim, intermediate_preds, verbose, outfile):
     msg = '%s invoked cli' %os.environ.get('USER', 'anonymous')
     usage_log.info(msg)
 
-    console_log.info('path: %s' %path)
+    console_log.info('path: %s' %observations_file)
     console_log.info('outfile: %s' %outfile)
     console_log.info('delim: %s' %delim)
     console_log.info('verbose: %s' %verbose)
