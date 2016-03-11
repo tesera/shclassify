@@ -9,6 +9,7 @@ def test_load_observations_raises_if_bad_path():
     with pytest.raises(OSError):
         load_observations('badpath')
 
+@pytest.mark.xfail(reason='data not available yet')
 def test_load_observations():
     df = load_observations('badpath')
     assert type(df) is pd.DataFrame
@@ -20,6 +21,7 @@ def test_load_model(model_filename):
     model_path = os.path.join(DATA_DIR, model_filename)
     df = load_model(model_path)
     assert type(df) is pd.DataFrame
+    print(df.index)
 
 def test_generate_data():
     fake = generate_fake_observations(shape=(2,3))
