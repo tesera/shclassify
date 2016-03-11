@@ -1,22 +1,23 @@
 import logging
 import os
 
+from .core import (load_observations, load_model,
+                   generate_fake_observations, calculate_prob)
+from .config import BASE_DIR, DATA_DIR, MODEL_FILES
 
-_BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-_LOG_FILENAME = __name__ + '.log'
-_LOG_PATH = os.path.join(_BASE_DIR, _LOG_FILENAME)
-_LOG_FORMAT = '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
 
+LOG_FILENAME = __name__ + '.log'
+LOG_PATH = os.path.join(BASE_DIR, LOG_FILENAME)
+LOG_FORMAT = '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
 
 logging.basicConfig(level=logging.DEBUG,
-                    format=_LOG_FORMAT,
+                    format=LOG_FORMAT,
                     datefmt='%y-%m-%d %H:%M:%S',
-                    filename=_LOG_PATH,
+                    filename=LOG_PATH,
                     filemode='w')
 
 log = logging.getLogger(__name__)
 
 
-def has_legs():
-    log.debug('in a function')
-    return False
+__all__ = [DATA_DIR, MODEL_FILES, load_observations, load_model,
+           generate_fake_observations, calculate_prob]
