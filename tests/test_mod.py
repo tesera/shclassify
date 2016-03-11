@@ -34,7 +34,10 @@ def test_calculate_prob(model_filename):
     model_path = os.path.join(DATA_DIR, model_filename)
     model = load_model(model_path)
     probs = calculate_prob(obs, model)
-    print(probs)
+
+    assert type(probs) is pd.DataFrame
+    # result has shape of N_OBS, N_CLASSES
+    assert probs.shape == (obs.shape[0],model.shape[1])
 
 def test_inverse_logit():
     assert False

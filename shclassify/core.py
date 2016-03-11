@@ -79,8 +79,8 @@ def calculate_prob(observations, model, intercept_name='(Intercept)'):
 
     .. warning:: for the model to be applied correctly, its row indices must be
     present among the column indices of the observations. If the correspondence
-    is not meaninful (e.g. integer indices matched by coincidence), the
-    result will not be meaninful!
+    is not meaninful (e.g. indices matched by coincidence), the result will not
+    be meaningful!
 
     :param observations: `pandas.DataFrame` of observations
     :param model: `pandas.DataFrame` of model
@@ -92,11 +92,10 @@ def calculate_prob(observations, model, intercept_name='(Intercept)'):
     model_variables.pop(intercept_index)
 
     #TODO: isolate block below
-    #: df[['names']] *copies*
-    #: pandas.pydata.org/pandas-docs/stable/indexing.html#indexing-view-versus-copy
     n_obs = observations.shape[0]
-    observations_for_model = observations[model_variables]
-    observations_for_model[intercept_name] = np.ones(n_obs)
+    observations_for_model = observations.ix[:,model_variables]
+    observations_for_model.loc[:,intercept_name] = pd.Series(
+        np.ones(n_obs), index=observations_for_model.index)
     observations_for_model.set_index([intercept_name], append=True)
 
     #: multiply - note that pandas handles checking index names match.
