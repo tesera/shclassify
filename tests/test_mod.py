@@ -2,8 +2,9 @@ import os
 import pytest
 import pandas as pd
 
-from shclassify import load_observations, load_model, DATA_DIR
-from shclassify.utils import generate_fake_observations
+from shclassify import (load_observations, load_model,
+                        DATA_DIR, generate_fake_observations)
+from shclassify.core import MODEL_FILES
 
 def test_load_observations_raises_if_bad_path():
     with pytest.raises(OSError):
@@ -14,19 +15,19 @@ def test_load_observations():
     df = load_observations('badpath')
     assert type(df) is pd.DataFrame
 
-@pytest.mark.parametrize('model_filename', ['model_v-nv-wt.txt',
-                                            'model_hf-hg-sc-so.txt',
-                                            'model_f-nf.txt'])
+@pytest.mark.parametrize('model_filename', MODEL_FILES)
 def test_load_model(model_filename):
     model_path = os.path.join(DATA_DIR, model_filename)
     df = load_model(model_path)
     assert type(df) is pd.DataFrame
 
-def test_generate_data(variables=[]):
-    fake = generate_fake_observations(shape=(2,3))
+def test_generate_data():
+    fake = generate_fake_observations(2)
     assert type(fake) is pd.DataFrame
-    assert False
-    # make sure variables are columns of fake
+    assert fake.shape[1] == len(set(fake.columns.values))
 
 def test_calculate_logit():
+    obs = generate_fake_observations(10)
+    model_path = os.path.join(DATA_DIR, MODEL_FILES[0])
+    model = load_model(model_path)
     assert False

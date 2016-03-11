@@ -1,4 +1,12 @@
+import os
+import numpy as np
+import pandas as pd
+
 from .utils import calc_num_na, load_data
+from .config import DATA_DIR, MODEL_FILES
+
+
+MODEL_PATHS = [os.path.join(DATA_DIR,item) for item in MODEL_FILES]
 
 
 def load_model(path, sep=',', index_col=[0], **kwargs):
@@ -27,6 +35,37 @@ def load_observations(path, sep=',', **kwargs):
 
     """
     return load_data(path, sep=sep, **kwargs)
+
+
+def get_features_from_model_files(paths, features_col=0):
+    """Retrieve features from model files
+
+    :param paths: paths to model files
+    :param kwargs: keyword arguments to `load_model`
+
+    """
+    features = []
+    for path in paths:
+        model = load_model(path, usecols=[features_col],
+                           index_col=None)
+        features += model.values.flatten().tolist()
+    features = set(features)
+    return features
+
+
+# TODO: compatibility with custom models
+def generate_fake_observations(n):
+    """Generate fake data for SLS HRIS LCC Prediction
+
+    :param n: number of observations to generate
+    """
+    features = get_features_from_model_files(MODEL_PATHS)
+
+    n_col = len(features)
+    arr = np.random.uniform(size=(n, n_col))
+    df = pd.DataFrame(data=arr)
+    df.columns = features
+    return df
 
 
 # TODO: may want to copy observations as it gets mutated

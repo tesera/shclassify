@@ -1,4 +1,3 @@
-import numpy as np
 import pandas as pd
 
 def calc_num_na(df):
@@ -20,12 +19,3 @@ def load_data(path, sep=',', **kwargs):
     df = pd.read_table(path, sep=sep, **kwargs)
     return df
 
-
-def generate_fake_observations(shape=(1,1)):
-    """Generate fake data for SLS HRIS LCC Prediction
-
-    :param n: number of observations to generate
-    """
-    arr = np.random.uniform(size=shape)
-    df = pd.DataFrame(data=arr)
-    return df
