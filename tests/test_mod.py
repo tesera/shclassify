@@ -21,9 +21,12 @@ def test_load_model(model_filename):
     model_path = os.path.join(DATA_DIR, model_filename)
     df = load_model(model_path)
     assert type(df) is pd.DataFrame
-    print(df.index)
 
-def test_generate_data():
+def test_generate_data(variables=[]):
     fake = generate_fake_observations(shape=(2,3))
     assert type(fake) is pd.DataFrame
-    print(fake)
+    assert False
+    # make sure variables are columns of fake
+
+def test_calculate_logit():
+    assert False

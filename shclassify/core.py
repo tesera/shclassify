@@ -1,12 +1,13 @@
 from .utils import calc_num_na, load_data
 
 
-def load_model(path, sep=',', index_col=[1], **kwargs):
+def load_model(path, sep=',', index_col=[0], **kwargs):
     """Load a model for SLS HRIS LCC Prediction
 
     :param path: path to input data, string or URL (e.g. http, s3)
     :param sep: input data field separator
     :param kwargs: additional keyword arguments passed to `utils.load_data`
+
     """
     model = load_data(path, sep=sep, index_col=index_col, **kwargs)
 
@@ -23,10 +24,13 @@ def load_observations(path, sep=',', **kwargs):
     :param path: path to input data, string or URL (e.g. http, s3)
     :param sep: input data field separator
     :param kwargs: additional keyword arguments passed to `utils.load_data`
+
     """
     return load_data(path, sep=sep, **kwargs)
 
 
+# TODO: may want to copy observations as it gets mutated
+#     : or ensure that there are no ill side effects
 def calculate_logit(observations, model):
     """Apply model to observations
 
@@ -39,13 +43,14 @@ def calculate_logit(observations, model):
     :param model: `pandas.DataFrame` of model
 
     """
-    variables = model.index()
-    #: subset observations columns to indices of
+    model_variables = model.index.tolist()
 
-    #: sort observations columns by index
+    #: subset observations columns to model variables
+    #: TODO: intercept
+    observations_for_model = observations[:,model_variables]
 
-    #: sort model rows by index
+    #: multiply - note that pandas handles checking index names match.
+    #: use np.dot(X,B) for non-matching index names
+    result = observations_for_model.dot(model)
 
-    #: multiply
-
-    #: return result
+    return result
