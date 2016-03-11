@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 
 def calc_num_na(df):
@@ -19,3 +20,10 @@ def load_data(path, sep=',', **kwargs):
     df = pd.read_table(path, sep=sep, **kwargs)
     return df
 
+# TODO: not robust to large x
+def inverse_logit(x):
+    """Calculate inverse logit (prob)
+
+    :param x: logit
+    """
+    return np.exp(x) / (1 + np.exp(x))
