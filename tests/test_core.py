@@ -30,7 +30,7 @@ def test_generate_data():
 
 @pytest.mark.parametrize('model_filename', MODEL_FILES)
 def test_calculate_prob(model_filename):
-    obs = generate_fake_observations(1)
+    obs = generate_fake_observations(1000)
     model_path = os.path.join(DATA_DIR, model_filename)
     model = load_model(model_path)
     probs = calculate_prob(obs, model)
