@@ -2,7 +2,8 @@ import os
 import numpy as np
 import pandas as pd
 
-from .utils import calc_num_na, load_data, inverse_logit
+from .utils import (calc_num_na, load_data, inverse_logit,
+                    choose_from_binary_probs, choose_from_multinomial_probs)
 from .config import DATA_DIR, MODEL_FILES
 
 
@@ -104,3 +105,17 @@ def calculate_prob(observations, model, intercept_name='(Intercept)'):
     result = result.applymap(inverse_logit)
 
     return result
+
+
+def choose_class_from_probs(df, **kwargs):
+    """Choose class from data frame of probabilities
+
+    :param df: `pandas.DataFrame` of binary or multinomial class probabilities
+    :param kwargs: keyword arguments to `utils.choose_from_binary_probs`
+
+    """
+    if df.shape[1] == 1:
+        class_preds = choose_from_binary_probs(df, **kwargs)
+    else:
+        class_preds = multinomial_choice(df)
+    return class_preds
