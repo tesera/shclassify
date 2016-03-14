@@ -11,9 +11,8 @@ def test_load_observations_raises_if_bad_path():
     with pytest.raises(OSError):
         load_observations('badpath')
 
-@pytest.mark.xfail(reason='data not available yet')
-def test_load_observations():
-    df = load_observations('badpath')
+def test_load_observations(path_to_observations_file):
+    df = load_observations(path_to_observations_file)
     assert type(df) is pd.DataFrame
 
 @pytest.mark.parametrize('model_filename', MODEL_FILES)
