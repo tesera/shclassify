@@ -192,19 +192,21 @@ class Tree:
     def predict_df(self, df):
         """Make predictions for observatiosn in data frame
 
+        .. note:: predictions will have same index as `df`
+
         :param df: `pandas.DataFrame` of observations
 
         """
         preds = pd.DataFrame(data='', index=df.index, columns=['class'])
 
         for cls, model in self.model.items():
-            # remove null
+            # remove null to avoid conflict with next mask query
             mask = pd.notnull(preds['class'])
             if not mask.any():
                 break
 
             # subset to parent class of model
-            mask = mask & (preds['class']==cls) # if preds['class'] is nan we get a problem
+            mask = mask & (preds['class']==cls)
             if not mask.any():
                 break
 
@@ -230,6 +232,8 @@ class Tree:
         :param chunksize: chunksize read `pred_file` for making predictions (MB)
 
         """
+        # TODO: we need to add an index here, otherwise the output file has
+        # nonsense index as it will repeat for each chunk
         reader = load_observations(obs_file, sep=sep,
                                    chunksize=chunksize, **kwargs)
 
