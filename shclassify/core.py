@@ -178,55 +178,34 @@ class Tree:
                 %(level, self.depth)
             )
 
-    def _predict_one(self, x, level=None):
-        """ Make class predictions for one observation using tree model
-
-        :param x: observation, row from `pandas.DataFrame`
-        :param level: depth in tree to which to predict
-
-        """
-        x_class = ['']
-        current_cls = x_class[-1]
-        depth = self.depth
-        # TODO: not ideal. predict_df uses this method for df.apply
-        #       which operates on rows as series
-        #       that is not compatible with calculate_prob, which is
-        #       designed for use with data frames
-        row = pd.DataFrame().append(x)
-
-        if level is not None:
-            self._validate_level(level)
-            depth = level
-
-        while current_cls in self.model and len(x_class) < depth:
-            model = self.model[current_cls]
-            probs_df = calculate_prob(row, model)
-            cls_df = choose_class_from_probs(probs_df)
-            # TODO: use something which returns str instead of DataFrame
-            current_cls = cls_df.iloc[0,0]
-            x_class.append(current_cls)
-
-        return ' '.join(str(x_class))
-
     def predict_df(self, df):
         """Make predictions for observatiosn in data frame
 
         :param df: `pandas.DataFrame` of observations
 
         """
-        level = None
-        before = datetime.datetime.now()
-        print(before)
+        preds = pd.DataFrame(data='', index=df.index, columns=['class'])
 
-        preds = df.apply(self._predict_one, axis=1, level=level)
+        for cls, model in self.model.items():
+            # remove null
+            mask = pd.notnull(preds['class'])
+            if not mask.any():
+                break
 
-        after = datetime.datetime.now()
-        print(after)
-        print(after-before)
-        return pd.DataFrame(preds)
+            # subset to parent class of model
+            mask = mask & (preds['class']==cls) # if preds['class'] is nan we get a problem
+            if not mask.any():
+                break
+
+            obs = df[mask.values]
+            obs_cls_probs = calculate_prob(obs, model)
+            cls_pred = choose_class_from_probs(obs_cls_probs) # TODO: add vars for binary case
+            preds[mask] = cls_pred # TODO: check!
+
+        return preds
 
     def predict_file(self, obs_file, pred_file, overwrite=False,
-                     sep=',', chunksize=1000, **kwargs):
+                     sep=',', chunksize=10000, **kwargs):
         """Make predictions for observations in file
 
         This automatically appends predictions to `pred_file`. To get
@@ -250,7 +229,5 @@ class Tree:
             res = self.predict_df(chunk)
             mode = 'w' if i==0 else 'a'
             header = mode == 'w'
-            print('************* %s ***************' %i)
-            print(mode)
 
             res.to_csv(pred_file, header=header, mode=mode)

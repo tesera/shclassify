@@ -37,10 +37,6 @@ def test__validate_level(tree):
         tree._validate_level('a')
         assert str(e.value) == 'Level must be integer'
 
-def test__predict_one(tree, fake_observation):
-    pred = tree._predict_one(fake_observation, level=None)
-    assert type(pred) is str
-
 def test_predict_df(tree, fake_observations):
     preds = tree.predict_df(fake_observations)
     assert type(preds) is pd.DataFrame
