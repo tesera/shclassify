@@ -1,5 +1,10 @@
+import logging
 import numpy as np
 import pandas as pd
+
+
+log = logging.getLogger(__name__)
+
 
 def calc_num_na(df):
     """ Check number of missing values in data frame
@@ -17,6 +22,7 @@ def load_data(path, sep=',', **kwargs):
     :param kwargs: keyword arguments passed to `pandas.read_table`
     """
     # TODO: may want to do validation callbacks here
+    log.debug('Loading data at %s' %path)
     df = pd.read_table(path, sep=sep, **kwargs)
     return df
 
@@ -39,6 +45,7 @@ def choose_from_multinomial_probs(df):
     of observation i belonging to class j.
 
     """
+    log.debug('Getting name of class with highest probability')
     if df.shape[1] < 2:
         raise ValueError('Data frame must have more than 1 column')
 
@@ -64,6 +71,7 @@ def choose_from_binary_probs(df, name_true, name_false, threshold=0.5):
     if threshold < 0 or threshold >1:
         raise ValueError('Threshold must be between 0 and 1')
 
+    log.debug('Assigning class name %s to observations > %s' %(name_true, str(threshold)))
     # TODO: check performance when predictions done row by row
     def apply_threshold(x, name_true=name_true, name_false=name_false,
                         threshold=threshold):

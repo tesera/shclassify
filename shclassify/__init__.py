@@ -3,7 +3,7 @@ import os
 
 from .core import (load_observations, load_model,
                    generate_fake_observations, calculate_prob,
-                   choose_class_from_probs)
+                   choose_class_from_probs, Tree)
 from .config import BASE_DIR, DATA_DIR, MODEL_FILES
 
 
@@ -22,4 +22,4 @@ log = logging.getLogger(__name__)
 
 __all__ = [DATA_DIR, MODEL_FILES, load_observations, load_model,
            generate_fake_observations, calculate_prob,
-           choose_class_from_probs]
+           choose_class_from_probs, Tree]
