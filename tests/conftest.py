@@ -20,6 +20,11 @@ def tree_args():
 def path_to_observations_file():
     return data_file_path('observations.txt')
 
+# TODO: use a smaller file here. best to manually create this in test
+@pytest.fixture
+def path_to_fake_observations_file():
+    return data_file_path('fake_obs_1M.txt')
+
 @pytest.fixture
 def tree(tree_args):
     return Tree(*tree_args)

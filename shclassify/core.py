@@ -76,7 +76,18 @@ def generate_fake_observations(n):
     arr = np.random.uniform(size=(n, n_col))
     df = pd.DataFrame(data=arr)
     df.columns = features
+
     return df
+
+
+def generate_fake_observations_file(n, path):
+    """Generate fake observatiosn file for SLS HRIS LCC Prediction
+
+    :param n: number of observations
+    :param path: path to file
+    """
+    df = generate_fake_observations(n)
+    df.to_csv(path)
 
 
 # TODO: may want to copy observations as it gets mutated
@@ -199,7 +210,7 @@ class Tree:
 
             obs = df[mask.values]
             obs_cls_probs = calculate_prob(obs, model)
-            cls_pred = choose_class_from_probs(obs_cls_probs) # TODO: add vars for binary case
+            cls_pred = choose_class_from_probs(obs_cls_probs) # TODO: add vars for binary case to model init
             preds[mask] = cls_pred # TODO: check!
 
         return preds

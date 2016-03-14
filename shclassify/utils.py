@@ -53,7 +53,7 @@ def choose_from_multinomial_probs(df):
     return pd.DataFrame(classes, columns=['class'])
 
 
-def choose_from_binary_probs(df, name_true, name_false, threshold=0.5):
+def choose_from_binary_probs(df, name_true='True', name_false='False', threshold=0.5):
     """Choose class from data frame of class probability
 
     :param df: `pandas.DataFrame` with values i,j corresponding to probability of observation i belonging to class `name_true`

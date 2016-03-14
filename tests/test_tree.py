@@ -45,3 +45,8 @@ def test_predict_df(tree, fake_observations):
 def test_predict_file(tree, path_to_observations_file):
     outfile = os.path.join(os.getcwd(), 'predictions.txt')
     tree.predict_file(path_to_observations_file, outfile)
+
+@pytest.mark.skip('Generate a large test file before enabling this test')
+def test_predict_file_fake(tree, path_to_fake_observations_file):
+    outfile = os.path.join(os.getcwd(), 'predictions.txt')
+    tree.predict_file(path_to_fake_observations_file, outfile)
