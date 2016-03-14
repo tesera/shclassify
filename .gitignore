@@ -56,3 +56,4 @@ target/
 # OS X
 .DS_Store
 /shclassify/data/fake_obs_1M.txt
+*predictions.txt
