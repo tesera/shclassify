@@ -3,6 +3,7 @@ import logging
 import datetime
 import numpy as np
 import pandas as pd
+from collections import OrderedDict
 
 from .utils import (calc_num_na, load_data, inverse_logit,
                     choose_from_binary_probs, choose_from_multinomial_probs)
@@ -90,15 +91,13 @@ def generate_fake_observations_file(n, path):
     df.to_csv(path)
 
 
-# TODO: may want to copy observations as it gets mutated
-#     : or ensure that there are no ill side effects
 def calculate_prob(observations, model, intercept_name='(Intercept)'):
     """Apply model to observations
 
     .. warning:: for the model to be applied correctly, its row indices must be
     present among the column indices of the observations. If the correspondence
     is not meaninful (e.g. indices matched by coincidence), the result will not
-    be meaningful!
+    be meaningful or an exception will be raised!
 
     :param observations: `pandas.DataFrame` of observations
     :param model: `pandas.DataFrame` of model
@@ -112,7 +111,10 @@ def calculate_prob(observations, model, intercept_name='(Intercept)'):
     #TODO: isolate block below
     n_obs = observations.shape[0]
     log.debug('Subsetting observations to variables in model')
-    observations_for_model = observations.ix[:,model_variables]
+    observations_for_model = observations.loc[:,model_variables]
+    if not set(model_variables).issubset(set(observations.columns.tolist())):
+        raise ValueError('Observations must contain all variables used in model!')
+        # TODO: inform which variables mismatch
     observations_for_model.loc[:,intercept_name] = pd.Series(
         np.ones(n_obs), index=observations_for_model.index)
     observations_for_model.set_index([intercept_name], append=True)
@@ -171,7 +173,7 @@ class Tree:
         raise RuntimeError('Not yet implemented')
 
     def _init_from_tuples(self, *tuples, **kwargs):
-        tree = {}
+        tree = OrderedDict()
 
         for k, v in tuples:
             if k in tree.keys():
@@ -203,17 +205,19 @@ class Tree:
             # remove null to avoid conflict with next mask query
             mask = pd.notnull(preds['class'])
             if not mask.any():
+                log.debug('Stopping prediction for class %s as all values are null' %cls)
                 break
 
             # subset to parent class of model
             mask = mask & (preds['class']==cls)
             if not mask.any():
+                log.debug('Stopping prediction because no observatiosn are class %s' %cls)
                 break
 
             obs = df[mask.values]
             obs_cls_probs = calculate_prob(obs, model)
             cls_pred = choose_class_from_probs(obs_cls_probs) # TODO: add vars for binary case to model init
-            preds[mask] = cls_pred # TODO: check!
+            preds[mask] = cls_pred
 
         return preds
 
