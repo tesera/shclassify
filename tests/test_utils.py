@@ -50,6 +50,7 @@ def test_choose_from_binary_probs():
 
     assert type(classes) is pd.DataFrame
     assert classes.shape == (n_obs, 1)
+    assert classes.applymap(lambda x: x in ['true', 'false']).all()[0]
     assert classes.columns == ['class']
 
 def test_choose_from_binary_probs_with_bad_shape():

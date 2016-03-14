@@ -39,5 +39,9 @@ def test_calculate_prob(model_filename):
     assert probs.shape == (obs.shape[0],model.shape[1])
 
 @pytest.mark.xfail(message='Thin wrapper around binary and multinomial choice')
-def test_choose_calss_from_probs():
+def test_choose_class_from_probs():
+    assert False
+
+def test_calculate_prob_raises_if_var_missing_from_observations():
+    # test is crucial - otherwise calculate_prob will return NaN for all obs
     assert False

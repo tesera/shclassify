@@ -13,6 +13,10 @@ def test_init_tree_from_tuples(tree_args):
     assert tree.depth == 4
 
 @pytest.mark.xfail(message='not yet implemented')
+def test_init_tree_preserves_order():
+    assert False
+
+@pytest.mark.xfail(message='not yet implemented')
 def test_init_tree_with_invalid_model():
     assert False
 
@@ -40,7 +44,6 @@ def test__validate_level(tree):
 def test_predict_df(tree, fake_observations):
     preds = tree.predict_df(fake_observations)
     assert type(preds) is pd.DataFrame
-    print(preds)
 
 def test_predict_file(tree, path_to_observations_file):
     outfile = os.path.join(os.getcwd(), 'predictions.txt')

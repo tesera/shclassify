@@ -79,6 +79,7 @@ def choose_from_binary_probs(df, name_true='True', name_false='False', threshold
         return cls
 
     classes = df.ix[:,0].apply(apply_threshold)
+    classes_df = pd.concat([classes], axis=1)
+    classes_df.columns=['class']
 
-    # TODO: a series to dataframe decorator could be convenient
-    return pd.DataFrame(classes, columns=['class'])
+    return classes_df
