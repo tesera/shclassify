@@ -3,17 +3,16 @@ import pytest
 import pandas as pd
 
 from shclassify import (load_observations, load_model,
-                        DATA_DIR, generate_fake_observations, calculate_prob)
-from shclassify.utils import inverse_logit
+                        DATA_DIR, generate_fake_observations, calculate_prob,
+                        choose_class_from_probs)
 from shclassify.core import MODEL_FILES
 
 def test_load_observations_raises_if_bad_path():
     with pytest.raises(OSError):
         load_observations('badpath')
 
-@pytest.mark.xfail(reason='data not available yet')
-def test_load_observations():
-    df = load_observations('badpath')
+def test_load_observations(path_to_observations_file):
+    df = load_observations(path_to_observations_file)
     assert type(df) is pd.DataFrame
 
 @pytest.mark.parametrize('model_filename', MODEL_FILES)
@@ -30,7 +29,7 @@ def test_generate_data():
 
 @pytest.mark.parametrize('model_filename', MODEL_FILES)
 def test_calculate_prob(model_filename):
-    obs = generate_fake_observations(1)
+    obs = generate_fake_observations(1000)
     model_path = os.path.join(DATA_DIR, model_filename)
     model = load_model(model_path)
     probs = calculate_prob(obs, model)
@@ -39,5 +38,10 @@ def test_calculate_prob(model_filename):
     # result has shape of N_OBS, N_CLASSES
     assert probs.shape == (obs.shape[0],model.shape[1])
 
-def test_inverse_logit():
+@pytest.mark.xfail(message='Thin wrapper around binary and multinomial choice')
+def test_choose_class_from_probs():
+    assert False
+
+def test_calculate_prob_raises_if_var_missing_from_observations():
+    # test is crucial - otherwise calculate_prob will return NaN for all obs
     assert False
