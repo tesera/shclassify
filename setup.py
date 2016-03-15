@@ -2,7 +2,7 @@ from codecs import open as codecs_open
 from setuptools import setup, find_packages
 
 
-with codecs_open('README', encoding='utf-8') as f:
+with codecs_open('README.md', encoding='utf-8') as f:
     long_description = f.read()
 
 
@@ -28,6 +28,7 @@ setup(name='shclassify',
       ],
       extras_require={
           'test': ['pytest'],
+          'develop': ['pytest', 'sphinx'],
       },
       entry_points="""
       [console_scripts]

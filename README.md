@@ -15,12 +15,18 @@ The general approach is as follows:
 6. update the data frame of predictions
 7. repeat 2-6 until no observations have a predicted class for which there is another model to apply
 
+## Python
+
+    shclassify is only compatible with python3!
+
 ## Installation
 
     unzip shclassify.zip
     # git clone
     cd shclassify
     pip install -e shclassify
+
+It is reccommended to install into a virtual environment!
 
 ## Usage
 
@@ -41,7 +47,15 @@ The CLI is the recommended usage
       --help                   Show this message and exit.
 
 
+## Troubleshooting
+
+If you are having issues with the CLI, try running with verbose mode `-v`. Issues often arise from errors in, or mismatches between, data and model files.
+
 ## Development
+
+Installation for development requires some additional packages
+
+    pip isntall -e shclassify[develop]
 
 To modify, create a feature branch, make the desired modification. Run the tests to check for regressions, and add tests to ensure new code works as expected and to protect the new code from regressions.
 
@@ -49,10 +63,8 @@ To modify, create a feature branch, make the desired modification. Run the tests
 
 See http://pytest.org/latest/ for more details about testing.
 
-## Troubleshooting
-
-If you are having issues with the CLI, try running with verbose mode `-v`. Issues often arise from errors in, or mismatches between, data and model files.
-
 ## Docs
 
 Beyond the CLI, documentation can be found at docs/build/index.html. Advanced users may also refer to the source code.
+
+
