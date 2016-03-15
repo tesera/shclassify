@@ -26,6 +26,10 @@ def test_init_tree_from_file():
     assert False
 
 @pytest.mark.xfail(message='not yet implemented')
+def test_init_default_model():
+    assert False
+
+@pytest.mark.xfail(message='not yet implemented')
 def test_init_tree_from_invalid_file():
     assert False
 

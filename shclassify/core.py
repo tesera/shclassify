@@ -14,6 +14,24 @@ log = logging.getLogger(__name__)
 MODEL_PATHS = [os.path.join(DATA_DIR,item) for item in MODEL_FILES]
 
 
+def data_file_path(modelfile):
+    return os.path.join(DATA_DIR, modelfile)
+
+_default_model = (
+    ('', {
+        'model': data_file_path('model_v-nv-wt.txt')
+    }),
+    ('V', {
+        'model': data_file_path('model_f-nf.txt'),
+        'label_above_threshold': 'NF',
+        'label_below_threshold': 'F',
+        'threshold': 0.5
+    }),
+    ('NF', {
+        'model': data_file_path('model_hf-hg-sc-so.txt')
+    })
+)
+
 def load_model(path, sep=',', index_col=[0], **kwargs):
     """Load a model for SLS HRIS LCC Prediction
 
@@ -171,6 +189,9 @@ class Tree:
             if tuples:
                 raise ValueError(('Only one of path or tuples '
                                   'should be provided'))
+
+        if not tuples:
+            tuples = _default_model
 
         self._init_from_tuples(*tuples, **kwargs)
 

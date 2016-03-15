@@ -1,11 +1,8 @@
 import os
 import pytest
 
-from shclassify import DATA_DIR, Tree, generate_fake_observations
+from shclassify import DATA_DIR, Tree, generate_fake_observations, data_file_path
 
-
-def data_file_path(modelfile):
-    return os.path.join(DATA_DIR, modelfile)
 
 @pytest.fixture
 def tree_args():
