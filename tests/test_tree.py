@@ -37,6 +37,7 @@ def test_init_tree_from_invalid_file():
 def test_init_tree_with_duplicate_classes():
     assert False
 
+@pytest.mark.xfail(message='requires reimplementing')
 def test__validate_level(tree):
     with pytest.raises(ValueError) as e:
         tree._validate_level(tree.depth+1)
