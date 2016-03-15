@@ -9,10 +9,20 @@ def data_file_path(modelfile):
 
 @pytest.fixture
 def tree_args():
-    args = ('', data_file_path('model_v-nv-wt.txt')), \
-           ('V', data_file_path('model_f-nf.txt')), \
-           ('NF', data_file_path('model_hf-hg-sc-so.txt'))
-           #('NV', data_file_path('model_v-nv-wt.txt')), \
+    args = (
+        ('', {
+            'model': data_file_path('model_v-nv-wt.txt')
+        }),
+        ('V', {
+             'model': data_file_path('model_f-nf.txt'),
+             'label_above_threshold': 'NF',
+             'label_below_threshold': 'F',
+             'threshold': 0.5
+        }),
+        ('NF', {
+            'model': data_file_path('model_hf-hg-sc-so.txt')
+        })
+    )
 
     return args
 

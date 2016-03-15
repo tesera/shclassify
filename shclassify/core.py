@@ -183,10 +183,20 @@ class Tree:
     def _init_from_tuples(self, *tuples, **kwargs):
         tree = OrderedDict()
 
-        for k, v in tuples:
-            if k in tree.keys():
-                raise ValueError('class %s has more than one model assignment')
-            tree[k] = load_model(v)
+        for label, model_dict in tuples:
+            if label in tree.keys():
+                raise ValueError(('class (%s) must not have more than'
+                                  ' one model assignment'))
+            # TODO: validate that true and false labels provided for
+            #       binary models
+            tree[label] = {
+                'model': load_model(model_dict['model']),
+                'label_above_threshold': model_dict.get(
+                    'label_above_threshold', '%s True' %label),
+                'label_below_threshold': model_dict.get(
+                    'label_below_threshold', '%s False' %label),
+                'threshold': model_dict.get('threshold')
+            }
 
         self.model = tree
 
@@ -209,7 +219,8 @@ class Tree:
         """
         preds = pd.DataFrame(data='', index=df.index, columns=['class'])
 
-        for cls, model in self.model.items():
+        for cls, model_dict in self.model.items():
+            model = model_dict['model']
             # remove null to avoid conflict with next mask query
             mask = pd.notnull(preds['class'])
             if not mask.any():
@@ -224,13 +235,18 @@ class Tree:
 
             obs = df[mask.values]
             obs_cls_probs = calculate_prob(obs, model)
-            cls_pred = choose_class_from_probs(obs_cls_probs) # TODO: add vars for binary case to model init
+            cls_pred = choose_class_from_probs(
+                obs_cls_probs,
+                name_true=model_dict['label_above_threshold'],
+                name_false=model_dict['label_below_threshold'],
+                threshold=model_dict['threshold']
+            )
             preds[mask] = cls_pred
 
         return preds
 
     def predict_file(self, obs_file, pred_file, overwrite=False,
-                     sep=',', chunksize=10000, **kwargs):
+                     sep=',', chunksize=10000, index_col=None):
         """Make predictions for observations in file
 
         This automatically appends predictions to `pred_file`. To get
@@ -242,12 +258,12 @@ class Tree:
         :param overwrite: overwrite `pred_file` if it exists
         :param sep: observation file separator
         :param chunksize: chunksize read `pred_file` for making predictions (MB)
-
+        :param index_col: integer index of column to use as data frame row index
+        :param kwargs: keyword arguments to `load_observations`
         """
-        # TODO: we need to add an index here, otherwise the output file has
-        # nonsense index as it will repeat for each chunk
         reader = load_observations(obs_file, sep=sep,
-                                   chunksize=chunksize, **kwargs)
+                                   chunksize=chunksize,
+                                   index_col=index_col)
 
         if os.path.exists(pred_file) and not overwrite:
             raise ValueError('%s already exists! Specify a new file.')

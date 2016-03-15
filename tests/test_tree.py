@@ -9,8 +9,9 @@ def test_init_tree_from_tuples(tree_args):
 
     assert tree.config_filepath is None
     for item in tree.model.values():
-        assert type(item) == pd.DataFrame
-    assert tree.depth == 4
+        model = item['model']
+        assert type(model) == pd.DataFrame
+    # TODO: check for arguments for binary models
 
 @pytest.mark.xfail(message='not yet implemented')
 def test_init_tree_preserves_order():
@@ -47,9 +48,14 @@ def test_predict_df(tree, fake_observations):
 
 def test_predict_file(tree, path_to_observations_file):
     outfile = os.path.join(os.getcwd(), 'predictions.txt')
-    tree.predict_file(path_to_observations_file, outfile)
+    tree.predict_file(path_to_observations_file, outfile,
+                      overwrite=True, index_col=0, sep=',',
+                      chunksize=1000)
 
 @pytest.mark.skip('Generate a large test file before enabling this test')
 def test_predict_file_fake(tree, path_to_fake_observations_file):
     outfile = os.path.join(os.getcwd(), 'predictions.txt')
-    tree.predict_file(path_to_fake_observations_file, outfile)
+    tree.predict_file(path_to_fake_observations_file, outfile,
+                      overwrite=True, index_col=0, sep=',',
+                      chunksize=1000)
+
