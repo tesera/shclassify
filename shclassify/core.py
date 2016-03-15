@@ -112,11 +112,19 @@ def calculate_prob(observations, model, intercept_name='(Intercept)'):
     n_obs = observations.shape[0]
     log.debug('Subsetting observations to variables in model')
     observations_for_model = observations.loc[:,model_variables]
-    if not set(model_variables).issubset(set(observations.columns.tolist())):
-        raise ValueError('Observations must contain all variables used in model!')
+
+    model_vars_set = set(model_variables)
+    obs_vars_set = set(observations.columns.tolist())
+    if not model_vars_set.issubset(obs_vars_set):
+        set_diff = model_vars_set.difference(obs_vars_set)
+        raise ValueError(
+            'Observations are missing variables: {}'.format(set_diff)
+        )
         # TODO: inform which variables mismatch
+
     observations_for_model.loc[:,intercept_name] = pd.Series(
-        np.ones(n_obs), index=observations_for_model.index)
+        np.ones(n_obs), index=observations_for_model.index
+    )
     observations_for_model.set_index([intercept_name], append=True)
 
     #: multiply - note that pandas handles checking index names match.
