@@ -21,7 +21,6 @@ def load_data(path, sep=',', **kwargs):
     :param sep: input data field separator
     :param kwargs: keyword arguments passed to `pandas.read_table`
     """
-    # TODO: may want to do validation callbacks here
     log.debug('Loading data at %s' %path)
     df = pd.read_table(path, sep=sep, **kwargs)
     return df
@@ -72,7 +71,6 @@ def choose_from_binary_probs(df, name_true='True', name_false='False', threshold
         raise ValueError('Threshold must be between 0 and 1')
 
     log.debug('Assigning class name %s to observations > %s' %(name_true, str(threshold)))
-    # TODO: check performance when predictions done row by row
     def apply_threshold(x, name_true=name_true, name_false=name_false,
                         threshold=threshold):
         cls = name_true if x > threshold else name_false

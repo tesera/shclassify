@@ -120,7 +120,6 @@ def calculate_prob(observations, model, intercept_name='(Intercept)'):
         raise ValueError(
             'Observations are missing variables: {}'.format(set_diff)
         )
-        # TODO: inform which variables mismatch
 
     observations_for_model.loc[:,intercept_name] = pd.Series(
         np.ones(n_obs), index=observations_for_model.index
@@ -174,8 +173,6 @@ class Tree:
                                   'should be provided'))
 
         self._init_from_tuples(*tuples, **kwargs)
-        self.depth = len(self.model.keys()) # TODO: one level can have 4
-                                            #       models, this is wrong
 
     def _config_file_to_tuples(self, path):
         raise RuntimeError('Not yet implemented')
@@ -199,15 +196,6 @@ class Tree:
             }
 
         self.model = tree
-
-    def _validate_level(self, level):
-        if type(level) != int:
-            raise TypeError('Level must be integer')
-        if level > self.depth:
-            raise ValueError(
-                'Level (%s) cannot exceed tree depth (%s)' \
-                %(level, self.depth)
-            )
 
     def predict_df(self, df):
         """Make predictions for observatiosn in data frame
