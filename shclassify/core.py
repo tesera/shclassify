@@ -70,6 +70,7 @@ def get_features_from_model_files(paths, features_col=0,
     :param paths: paths to model files
     :param kwargs: keyword arguments to `load_model`
     :param intercept_names: list of strings to be removed from features
+
     """
     features = []
     for path in paths:
@@ -88,6 +89,7 @@ def generate_fake_observations(n):
     """Generate fake data for SLS HRIS LCC Prediction
 
     :param n: number of observations to generate
+
     """
     features = get_features_from_model_files(MODEL_PATHS)
 
@@ -104,6 +106,7 @@ def generate_fake_observations_file(n, path):
 
     :param n: number of observations
     :param path: path to file
+
     """
     df = generate_fake_observations(n)
     df.to_csv(path)
@@ -112,10 +115,7 @@ def generate_fake_observations_file(n, path):
 def calculate_prob(observations, model, intercept_name='(Intercept)'):
     """Apply model to observations
 
-    .. warning:: for the model to be applied correctly, its row indices must be
-    present among the column indices of the observations. If the correspondence
-    is not meaninful (e.g. indices matched by coincidence), the result will not
-    be meaningful or an exception will be raised!
+    .. warning:: for the model to be applied correctly, its row indices must be present among the column indices of the observations. If the correspondence is not meaninful (e.g. indices matched by coincidence), the result will not be meaningful or an exception will be raised!
 
     :param observations: `pandas.DataFrame` of observations
     :param model: `pandas.DataFrame` of model
@@ -171,13 +171,28 @@ def choose_class_from_probs(df, **kwargs):
 class Tree:
     """Model tree
 
-    .. note:: kwargs assumes all modelfiles have same format
+    Construct a classification tree from logistic regression models
 
-    .. note:: model file columns must map to class names
-
-    :param *tuples: tuples of (class, modelfile) to
+    :param tuples: tuples which define classification tree - see below for example
     :param path: path to model configuration file
-    :param kwargs: keyword arguments to shclassify.load_model
+    :param kwargs: keyword arguments to shclassify.load_model; currently assumes all model files have same tabular formatting
+
+    The default model is
+
+    ::
+
+        ('', {
+            'model': data_file_path('model_v-nv-wt.txt')
+        }),
+        ('V', {
+            'model': data_file_path('model_f-nf.txt'),
+            'label_above_threshold': 'NF',
+            'label_below_threshold': 'F',
+            'threshold': 0.5
+        }),
+        ('NF', {
+            'model': data_file_path('model_hf-hg-sc-so.txt')
+        })
 
     """
     def __init__(self, *tuples, path=None, **kwargs):
@@ -219,7 +234,7 @@ class Tree:
         self.model = tree
 
     def predict_df(self, df):
-        """Make predictions for observatiosn in data frame
+        """Make predictions for observations in data frame
 
         .. note:: predictions will have same index as `df`
 
@@ -266,7 +281,7 @@ class Tree:
         :param pred_file: path of file to write predictions
         :param overwrite: overwrite `pred_file` if it exists
         :param sep: observation file separator
-        :param chunksize: chunksize read `pred_file` for making predictions (MB)
+        :param chunksize: chunksize (lines) read `pred_file` for making predictions
         :param index_col: integer index of column to use as data frame row index
         :param kwargs: keyword arguments to `load_observations`
         """
