@@ -7,9 +7,10 @@ log = logging.getLogger(__name__)
 
 
 def calc_num_na(df):
-    """ Check number of missing values in data frame
-    Keyword Arguments:
+    """Check number of missing values in data frame
+
     :param df: `pandas.DataFrame`
+
     """
     return pd.isnull(df).sum().sum()
 
@@ -20,6 +21,7 @@ def load_data(path, sep=',', **kwargs):
     :param path: path to input data, string or URL (e.g. http, s3)
     :param sep: input data field separator
     :param kwargs: keyword arguments passed to `pandas.read_table`
+
     """
     log.debug('Loading data at %s' %path)
     df = pd.read_table(path, sep=sep, **kwargs)
@@ -31,6 +33,7 @@ def inverse_logit(x):
     """Calculate inverse logit (prob)
 
     :param x: logit
+
     """
     return np.exp(x) / (1 + np.exp(x))
 
@@ -40,8 +43,7 @@ def choose_from_multinomial_probs(df):
 
     index of input data frame is assuemd to contain class names.
 
-    :param df: `pandas.DataFrame` with values i,j corresponding to probability
-    of observation i belonging to class j.
+    :param df: `pandas.DataFrame` with values i,j corresponding to probability of observation i belonging to class j.
 
     """
     log.debug('Getting name of class with highest probability from: {}'.format(
@@ -54,7 +56,7 @@ def choose_from_multinomial_probs(df):
 
 
 def choose_from_binary_probs(df, name_true='True', name_false='False', threshold=0.5):
-    """Choose class from data frame of class probability
+    """Choose class from data frame of class probabilities for *one* class
 
     :param df: `pandas.DataFrame` with values i,j corresponding to probability of observation i belonging to class `name_true`
     :param threshold: threshold for assigning observatiosn to class `name_true`
