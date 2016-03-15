@@ -2,15 +2,7 @@ import os
 import click
 import logging
 
-from shclassify import Tree
-
-console = logging.StreamHandler()
-console.setLevel(logging.INFO)
-console_fmt = logging.Formatter('%(levelname)-8s %(message)s')
-console.setFormatter(console_fmt)
-console_log = logging.getLogger('console')
-console_log.propagate = False
-console_log.addHandler(console)
+from shclassify import Tree, log
 
 usage_log_path = os.path.abspath(__file__) + '.log'
 usage = logging.FileHandler(usage_log_path)
@@ -49,8 +41,14 @@ def cli(observations_file, delim, index_col, chunksize, verbose, outfile):
     msg = '%s invoked cli' %os.environ.get('USER', 'anonymous')
     usage_log.info(msg)
 
-    tree = Tree()
+    console = logging.StreamHandler()
+    level = logging.DEBUG if verbose else logging.INFO
+    console.setLevel(level)
+    console_fmt = logging.Formatter('%(levelname)-8s %(message)s')
+    console.setFormatter(console_fmt)
+    log.addHandler(console)
 
+    tree = Tree()
     tree.predict_file(observations_file, outfile,
                       overwrite=False, index_col=index_col, sep=delim,
                       chunksize=chunksize)
