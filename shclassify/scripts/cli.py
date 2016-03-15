@@ -4,15 +4,22 @@ import logging
 
 from shclassify import Tree, log
 
+
 usage_log_path = os.path.abspath(__file__) + '.log'
 usage = logging.FileHandler(usage_log_path)
 usage.setLevel(logging.INFO)
-usage_fmt = logging.Formatter('%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
-                              datefmt='%Y-%m-%d %H:%M:%S')
+usage_fmt = logging.Formatter(
+    '%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S')
 usage.setFormatter(usage_fmt)
 usage_log = logging.getLogger('usage')
 usage_log.propagate = False
 usage_log.addHandler(usage)
+
+console = logging.StreamHandler()
+console_fmt = logging.Formatter('%(name)-12s %(levelname)-8s %(message)s')
+console.setFormatter(console_fmt)
+log.addHandler(console)
 
 
 def create_output_path(ctx, param, value):
@@ -41,14 +48,17 @@ def cli(observations_file, delim, index_col, chunksize, verbose, outfile):
     msg = '%s invoked cli' %os.environ.get('USER', 'anonymous')
     usage_log.info(msg)
 
-    console = logging.StreamHandler()
-    level = logging.DEBUG if verbose else logging.INFO
+    level = logging.INFO if verbose else logging.WARNING
     console.setLevel(level)
-    console_fmt = logging.Formatter('%(levelname)-8s %(message)s')
-    console.setFormatter(console_fmt)
-    log.addHandler(console)
 
+    click.echo('Creating classification tree')
     tree = Tree()
+
+    click.echo(
+        'Predicting classes for observations in {}'.format(observations_file)
+    )
     tree.predict_file(observations_file, outfile,
                       overwrite=False, index_col=index_col, sep=delim,
                       chunksize=chunksize)
+
+    click.echo('Predictions saved to file: {}'.format(outfile))

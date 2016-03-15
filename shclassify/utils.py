@@ -44,7 +44,8 @@ def choose_from_multinomial_probs(df):
     of observation i belonging to class j.
 
     """
-    log.debug('Getting name of class with highest probability')
+    log.debug('Getting name of class with highest probability from: {}'.format(
+        df.columns.tolist()))
     if df.shape[1] < 2:
         raise ValueError('Data frame must have more than 1 column')
 
@@ -70,7 +71,9 @@ def choose_from_binary_probs(df, name_true='True', name_false='False', threshold
     if threshold < 0 or threshold >1:
         raise ValueError('Threshold must be between 0 and 1')
 
-    log.debug('Assigning class name %s to observations > %s' %(name_true, str(threshold)))
+    log.debug('Assigning class name {} to observations > {}, else {}'.format(
+        name_true, str(threshold), name_false)
+    )
     def apply_threshold(x, name_true=name_true, name_false=name_false,
                         threshold=threshold):
         cls = name_true if x > threshold else name_false

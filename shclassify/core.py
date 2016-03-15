@@ -40,10 +40,10 @@ def load_model(path, sep=',', index_col=[0], **kwargs):
     :param kwargs: additional keyword arguments passed to `utils.load_data`
 
     """
-    log.debug('Loading model at %s' %path)
+    log.info('Loading model at %s' %path)
     model = load_data(path, sep=sep, index_col=index_col, **kwargs)
 
-    log.debug('Checking model for missing coefficients')
+    log.info('Checking model for missing coefficients')
     missing = calc_num_na(model)
     if missing > 0:
         raise ValueError(('Model has %s missing coefficients.' %missing))
@@ -59,7 +59,7 @@ def load_observations(path, sep=',', **kwargs):
     :param kwargs: additional keyword arguments passed to `utils.load_data`
 
     """
-    log.debug('Loading observations at %s' %path)
+    log.info('Loading observations at %s' %path)
     return load_data(path, sep=sep, **kwargs)
 
 
@@ -128,7 +128,7 @@ def calculate_prob(observations, model, intercept_name='(Intercept)'):
 
     #TODO: isolate block below
     n_obs = observations.shape[0]
-    log.debug('Subsetting observations to variables in model')
+    log.info('Subsetting observations to variables in model')
     observations_for_model = observations.loc[:,model_variables]
 
     model_vars_set = set(model_variables)
@@ -148,7 +148,7 @@ def calculate_prob(observations, model, intercept_name='(Intercept)'):
     #: use np.dot(X,B) for non-matching index names
     log.debug('Caclulating logits')
     result = observations_for_model.dot(model)
-    log.debug('Calculating probabilities')
+    log.info('Calculating probabilities')
     result = result.applymap(inverse_logit)
 
     return result
@@ -278,6 +278,7 @@ class Tree:
             raise ValueError('%s already exists! Specify a new file.')
 
         for i, chunk in enumerate(reader):
+            log.info('Loading chunk %s' %i)
             res = self.predict_df(chunk)
             mode = 'w' if i==0 else 'a'
             header = mode == 'w'
