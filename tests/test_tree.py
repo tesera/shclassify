@@ -57,5 +57,5 @@ def test_predict_file_fake(tree, path_to_fake_observations_file):
     outfile = os.path.join(os.getcwd(), 'predictions.txt')
     tree.predict_file(path_to_fake_observations_file, outfile,
                       overwrite=True, index_col=0, sep=',',
-                      chunksize=1000)
+                      chunksize=100000)
 
