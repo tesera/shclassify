@@ -24,6 +24,8 @@ The general approach is as follows:
     unzip shclassify.zip
     # git clone
     cd shclassify
+    virtualenv -p /path/to/python3 venv
+    . venv/bin/activate
     pip install -e shclassify
 
 It is reccommended to install into a virtual environment!
